@@ -1,0 +1,1032 @@
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #include p16f887.inc
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F887 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2014 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00809         LIST
+                      00002 
+2007   2CD6           00003  __CONFIG _CONFIG1, _FOSC_EXTRC_NOCLKOUT & _WDTE_OFF & _PWRTE_OFF & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _B
+                            OREN_OFF & _IESO_ON & _FCMEN_ON & _LVP_OFF
+                      00004 
+2008   3FFF           00005  __CONFIG _CONFIG2, _BOR4V_BOR40V & _WRT_OFF
+                      00006 
+Warning[205]: Found directive in column 1. (org)
+                      00007 org 0x000
+                      00008 
+  00000015            00009 d1 EQU 0x15
+  00000016            00010 d2 EQU 0x16
+  00000017            00011 d3 EQU 0x17
+  00000018            00012 d4 EQU 0x18
+  00000019            00013 d5 EQU 0x19
+  00000020            00014 d6 EQU 0x20
+  00000021            00015 bird EQU 0X21
+  00000022            00016 cnt EQU 0x22
+                      00017 
+  00000024            00018 d7 EQU 0x24
+                      00019 
+                      00020 
+Warning[205]: Found directive in column 1. (banksel)
+0000   1683 1303      00021 banksel TRISC
+Warning[203]: Found opcode in column 1. (movlw)
+0002   3000           00022 movlw b'00000000'
+Warning[203]: Found opcode in column 1. (movwf)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0003   0087           00023 movwf TRISC
+Warning[203]: Found opcode in column 1. (movwf)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0088           00024 movwf TRISD
+Warning[205]: Found directive in column 1. (banksel)
+0005   1683 1703      00025 banksel ANSEL
+Warning[203]: Found opcode in column 1. (clrf)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0007   0188           00026 clrf ANSEL
+Warning[203]: Found opcode in column 1. (clrf)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0189           00027 clrf ANSELH
+Warning[205]: Found directive in column 1. (banksel)
+0009   1283 1303      00028 banksel PORTC
+Warning[203]: Found opcode in column 1. (clrf)
+000B   0187           00029 clrf PORTC
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (clrf)
+000C   0188           00030 clrf PORTD
+                      00031 
+Warning[203]: Found opcode in column 1. (movlw)
+000D   3010           00032 movlw b'00010000'
+Warning[203]: Found opcode in column 1. (movwf)
+000E   00A1           00033 movwf bird
+                      00034 
+Warning[203]: Found opcode in column 1. (movlw)
+000F   30BB           00035 movlw b'10111011'
+Warning[203]: Found opcode in column 1. (movwf)
+0010   00A2           00036 movwf cnt
+                      00037 
+Warning[203]: Found opcode in column 1. (goto)
+0011   2???           00038 goto main
+Warning[205]: Found directive in column 1. (org)
+                      00039 org 0x030
+                      00040 
+Warning[203]: Found opcode in column 1. (bcf)
+0030   1003           00041 bcf STATUS,0
+0031                  00042 main:
+0031   0CA2           00043     rrf cnt,1
+0032   1C22           00044     btfss cnt,0
+0033   2???           00045     call Display1
+                      00046 
+0034   0CA2           00047     rrf cnt,1
+0035   1C22           00048     btfss cnt,0
+0036   2???           00049     call Display2
+                      00050     
+0037   0CA2           00051     rrf cnt,1
+0038   1C22           00052     btfss cnt,0
+0039   2???           00053     call Display3
+                      00054 
+                      00055     
+003A   2???           00056     goto main
+                      00057 
+003B                  00058 button:
+003B   0187           00059     clrf PORTC
+003C   0188           00060     clrf PORTD
+003D   0821           00061     movfw bird
+003E   0087           00062     movwf PORTC
+003F   1508           00063     bsf PORTD,2
+0040   1003           00064     bcf STATUS,0
+0041   0CA1           00065     rrf bird,1
+                      00066 
+0042   1806           00067     btfsc PORTB,0
+0043   2???           00068     call flappy
+0044   2???           00069     call Delay
+                      00070 
+0045   1803           00071     btfsc STATUS,0
+0046   2???           00072     GOTO LOSE
+                      00073 
+0047   0008           00074     return
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00075 
+0048                  00076 flappy:
+Warning[203]: Found opcode in column 1. (rlf)
+0048   0DA1           00077 rlf bird,1
+Warning[203]: Found opcode in column 1. (rlf)
+0049   0DA1           00078 rlf bird,1
+Warning[203]: Found opcode in column 1. (call)
+004A   2???           00079 call Delay
+Warning[203]: Found opcode in column 1. (return)
+004B   0008           00080 return
+                      00081 
+004C                  00082 LOSE:
+Warning[203]: Found opcode in column 1. (movlw)
+004C   30FF           00083 movlw   0xff
+Warning[203]: Found opcode in column 1. (movwf)
+004D   0087           00084 movwf PORTC
+Warning[203]: Found opcode in column 1. (movlw)
+004E   30FF           00085 movlw   0xff
+Warning[203]: Found opcode in column 1. (movwf)
+004F   0088           00086 movwf PORTD
+Warning[203]: Found opcode in column 1. (btfsc)
+0050   1806           00087 btfsc PORTB,0
+Warning[203]: Found opcode in column 1. (GOTO)
+0051   2???           00088 GOTO restore
+Warning[203]: Found opcode in column 1. (call)
+0052   2???           00089 call Delay
+Warning[203]: Found opcode in column 1. (call)
+0053   2???           00090 call Delay
+Warning[203]: Found opcode in column 1. (rrf)
+0054   0CA2           00091 rrf cnt,1
+Warning[203]: Found opcode in column 1. (GOTO)
+0055   2???           00092 GOTO LOSE
+                      00093 
+0056                  00094 restore:
+Warning[203]: Found opcode in column 1. (movlw)
+0056   3010           00095 movlw   b'00010000'
+Warning[203]: Found opcode in column 1. (movwf)
+0057   0087           00096 movwf PORTC
+Warning[203]: Found opcode in column 1. (CLRF)
+0058   0188           00097 CLRF PORTD
+Warning[203]: Found opcode in column 1. (bsf)
+0059   1608           00098 bsf PORTD,4
+Warning[203]: Found opcode in column 1. (bcf)
+005A   1003           00099 bcf STATUS,0
+Warning[203]: Found opcode in column 1. (goto)
+005B   2???           00100 goto main
+                      00101 
+005C                  00102 Delay:
+                      00103                                 ;699998 cycles
+005C   305F           00104         movlw   0x5F
+005D   0095           00105         movwf   d1
+005E   30EB           00106         movlw   0xEB
+005F   0096           00107         movwf   d2
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0060                  00108 Delay_0:
+0060   0B95           00109     decfsz      d1, f
+0061   2???           00110         goto    $+2
+0062   0B96           00111         decfsz  d2, f
+0063   2???           00112         goto    Delay_0
+                      00113 
+                      00114                         ;2 cycles
+0064   2???           00115         goto    $+1
+Warning[203]: Found opcode in column 1. (return)
+0065   0008           00116 return
+                      00117 
+0066                  00118 Display1:
+0066   30CF           00119     movlw b'11001111'
+0067   0087           00120     movwf PORTC
+                      00121     
+                      00122 
+0068   30C0           00123     movlw b'11000000';1
+0069   0088           00124     movwf PORTD
+006A   2???           00125     call Delay
+006B   2???           00126     call button
+                      00127 
+006C   30CF           00128     movlw b'11001111'
+006D   0087           00129     movwf PORTC
+006E   3060           00130     movlw b'01100000';2
+006F   0088           00131     movwf PORTD
+0070   2???           00132     call Delay
+0071   2???           00133     call button
+                      00134     
+                      00135 
+0072   30CF           00136     movlw b'11001111'
+0073   0087           00137     movwf PORTC
+0074   3030           00138     movlw b'00110000';3
+0075   0088           00139     movwf PORTD
+0076   2???           00140     call Delay
+0077   2???           00141     call button
+                      00142     
+                      00143 
+0078   30CF           00144     movlw b'11001111'
+0079   0087           00145     movwf PORTC
+007A   3018           00146     movlw b'00011000';4
+007B   0088           00147     movwf PORTD
+007C   2???           00148     call Delay
+007D   2???           00149     call button
+                      00150     
+                      00151 
+007E   30CF           00152     movlw b'11001111'
+007F   0087           00153     movwf PORTC
+0080   300C           00154     movlw b'00001100';5
+0081   0088           00155     movwf PORTD
+0082   2???           00156     call Delay
+0083   2???           00157     call button
+0084   2???           00158     call check1
+                      00159 
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0085   30CF           00160     movlw b'11001111'
+0086   0087           00161     movwf PORTC
+0087   3006           00162     movlw b'00000110';6
+0088   0088           00163     movwf PORTD
+0089   2???           00164     call Delay
+008A   2???           00165     call button
+008B   2???           00166     call check1
+                      00167 
+008C   30CF           00168     movlw b'11001111'
+008D   0087           00169     movwf PORTC
+008E   3003           00170     movlw b'00000011';7
+008F   0088           00171     movwf PORTD
+0090   2???           00172     call Delay
+0091   2???           00173     call button
+                      00174 
+0092   0008           00175     return
+                      00176 
+0093                  00177 Display2:
+0093   30E7           00178     movlw b'11100111'
+0094   0087           00179     movwf PORTC
+                      00180 
+0095   30C0           00181     movlw b'11000000';1
+0096   0088           00182     movwf PORTD
+0097   2???           00183     call Delay
+0098   2???           00184     call button
+                      00185 
+0099   30E7           00186     movlw b'11100111'
+009A   0087           00187     movwf PORTC
+009B   3060           00188     movlw b'01100000';2
+009C   0088           00189     movwf PORTD
+009D   2???           00190     call Delay
+009E   2???           00191     call button
+009F   0CA2           00192     rrf cnt,1
+                      00193 
+00A0   30E7           00194     movlw b'11100111'
+00A1   0087           00195     movwf PORTC
+00A2   3030           00196     movlw b'00110000';3
+00A3   0088           00197     movwf PORTD
+00A4   2???           00198     call Delay
+00A5   2???           00199     call button
+                      00200     
+                      00201 
+00A6   30E7           00202     movlw b'11100111'
+00A7   0087           00203     movwf PORTC
+00A8   3018           00204     movlw b'00011000';4
+00A9   0088           00205     movwf PORTD
+00AA   2???           00206     call Delay
+00AB   2???           00207     call button
+                      00208     
+                      00209 
+00AC   30E7           00210     movlw b'11100111'
+00AD   0087           00211     movwf PORTC
+00AE   300C           00212     movlw b'00001100';5
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00AF   0088           00213     movwf PORTD
+00B0   2???           00214     call Delay
+00B1   2???           00215     call button
+00B2   2???           00216     call check2
+                      00217 
+00B3   30E7           00218     movlw b'11100111'
+00B4   0087           00219     movwf PORTC
+00B5   3006           00220     movlw b'00000110';6
+00B6   0088           00221     movwf PORTD
+00B7   2???           00222     call Delay
+00B8   2???           00223     call button
+00B9   2???           00224     call check2
+                      00225 
+00BA   30E7           00226     movlw b'11100111'
+00BB   0087           00227     movwf PORTC
+00BC   3003           00228     movlw b'00000011';7
+00BD   0088           00229     movwf PORTD
+00BE   2???           00230     call Delay
+00BF   2???           00231     call button
+                      00232 
+00C0   0008           00233     return
+                      00234 
+00C1                  00235 Display3:
+                      00236    
+00C1   30F3           00237     movlw b'11110011'
+00C2   0087           00238     movwf PORTC
+00C3   30C0           00239     movlw b'11000000';1
+00C4   0088           00240     movwf PORTD
+00C5   2???           00241     call Delay
+00C6   2???           00242     call button
+                      00243 
+00C7   30F3           00244     movlw b'11110011'
+00C8   0087           00245     movwf PORTC
+00C9   3060           00246     movlw b'01100000';2
+00CA   0088           00247     movwf PORTD
+00CB   2???           00248     call Delay
+00CC   2???           00249     call button
+                      00250     
+                      00251 
+00CD   30F3           00252     movlw b'11110011'
+00CE   0087           00253     movwf PORTC
+00CF   3030           00254     movlw b'00110000';3
+00D0   0088           00255     movwf PORTD
+00D1   2???           00256     call Delay
+00D2   2???           00257     call button
+                      00258     
+                      00259 
+00D3   30F3           00260     movlw b'11110011'
+00D4   0087           00261     movwf PORTC
+00D5   3018           00262     movlw b'00011000';4
+00D6   0088           00263     movwf PORTD
+00D7   2???           00264     call Delay
+00D8   2???           00265     call button
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00266     
+                      00267 
+00D9   30F3           00268     movlw b'11110011'
+00DA   0087           00269     movwf PORTC
+00DB   300C           00270     movlw b'00001100';5
+00DC   0088           00271     movwf PORTD
+00DD   2???           00272     call Delay
+00DE   2???           00273     call button
+00DF   2???           00274     call check3
+                      00275 
+00E0   30F3           00276     movlw b'11110011'
+00E1   0087           00277     movwf PORTC
+00E2   3006           00278     movlw b'00000110';6
+00E3   0088           00279     movwf PORTD
+00E4   2???           00280     call Delay
+00E5   2???           00281     call button
+00E6   2???           00282     call check3
+                      00283 
+00E7   30F3           00284     movlw b'11110011'
+00E8   0087           00285     movwf PORTC
+00E9   3003           00286     movlw b'00000011';7
+00EA   0088           00287     movwf PORTD
+00EB   2???           00288     call Delay
+00EC   2???           00289     call button
+                      00290 
+00ED   0008           00291     return
+                      00292 
+Warning[207]: Found label after column 1. (check1)
+00EE                  00293     check1:
+00EE   1E07           00294     btfss PORTC,4
+00EF   2???           00295     call LOSE
+00F0   1E87           00296     BTFSS PORTC,5
+00F1   2???           00297     CALL LOSE
+00F2   0008           00298     return
+                      00299 
+Warning[207]: Found label after column 1. (check2)
+00F3                  00300     check2:
+00F3   1D87           00301     btfss PORTC,3
+00F4   2???           00302     call LOSE
+00F5   1E07           00303     BTFSS PORTC,4
+00F6   2???           00304     CALL LOSE
+00F7   0008           00305     return
+                      00306 
+Warning[207]: Found label after column 1. (check3)
+00F8                  00307     check3:
+00F8   1D07           00308     btfss PORTC,2
+00F9   2???           00309     call LOSE
+00FA   1D87           00310     BTFSS PORTC,3
+00FB   2???           00311     CALL LOSE
+00FC   0008           00312     return
+Warning[205]: Found directive in column 1. (end)
+2CD6 3FFF             00313 end
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+BRG9                              00000001
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRGH                              00000002
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+CREN                              00000004
+CSRC                              00000007
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+D_A                               00000005
+D_NOT_A                           00000005
+Delay                             0000005C
+Delay_0                           00000060
+Display1                          00000066
+Display2                          00000093
+Display3                          000000C1
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INTEDG                            00000006
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LOSE                              0000004C
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+VCFG0                             00000004
+VCFG1                             00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_.org_1_0061                      00000061
+_.org_1_0064                      00000064
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/FLAPP   4-24-2014  7:55:25         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_XT_OSC                           00003FF9
+__16F887                          00000001
+bird                              00000021
+button                            0000003B
+check1                            000000EE
+check2                            000000F3
+check3                            000000F8
+cnt                               00000022
+d1                                00000015
+d2                                00000016
+d3                                00000017
+d4                                00000018
+d5                                00000019
+d6                                00000020
+d7                                00000024
+flappy                            00000048
+main                              00000031
+restore                           00000056
+
+Errors   :     0
+Warnings :    43 reported,     0 suppressed
+Messages :     4 reported,     0 suppressed
+
+

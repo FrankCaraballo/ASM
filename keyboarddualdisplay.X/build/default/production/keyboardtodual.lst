@@ -1,0 +1,952 @@
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;Frank Caraballo
+                      00002 ;ID:1043377
+                      00003 ;MAT: 10-0217
+                      00004 ;TAREA #2
+                      00005 
+                      00006 
+                      00007 #include p16f887.inc
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F887 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2014 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00809         LIST
+Warning[205]: Found directive in column 1. (LIST)
+                      00008 LIST   P=PIC16F887
+                      00009 
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   2FF4           00010 __CONFIG _CONFIG1 ,_WDT_OFF & _LVP_OFF & _MCLRE_ON & _INTRC_OSC_NOCLKOUT
+                      00011 
+                      00012 
+Warning[207]: Found label after column 1. (STATUS)
+  00000003            00013     STATUS equ 0x03               ;direcion del registro status
+Warning[207]: Found label after column 1. (PORTB)
+  00000006            00014     PORTB  equ 0x06               ;direcion del registro de portb
+Warning[207]: Found label after column 1. (PORTC)
+  00000007            00015     PORTC  equ 0x07               ;direcion del registro de portc
+Warning[207]: Found label after column 1. (PORTD)
+  00000008            00016     PORTD  equ 0x08               ;direcion del registro de portd
+Warning[207]: Found label after column 1. (TRISB)
+  00000086            00017     TRISB  equ 0x86               ;direcion del registro de tristate para portb, salida hacia 7 segmento
+                            s
+Warning[207]: Found label after column 1. (TRISC)
+  00000087            00018     TRISC  equ 0x87               ;direcion del registro de tristate para portc, salida del teclado y bi
+                            ts de selecion
+Warning[207]: Found label after column 1. (TRISD)
+  00000088            00019     TRISD  equ 0x88               ;direcion del registro de tristate para portc , entrada del teclado
+                      00020 
+Warning[207]: Found label after column 1. (temp)
+  00000021            00021     temp   equ 0x21               ;registro temporal
+Warning[207]: Found label after column 1. (temp2)
+  00000022            00022     temp2  equ 0x22               ;registro temporal2
+                      00023 
+Warning[207]: Found label after column 1. (COUNT1)
+  00000008            00024     COUNT1 equ 0x08               ;contador1 para el delay
+Warning[207]: Found label after column 1. (COUNT2)
+  00000009            00025     COUNT2 equ 0x09               ;contador2 para el delay
+                      00026 
+                      00027     ORG    0x000
+                      00028 
+                      00029 
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0000   1683           00030     bsf STATUS,5                ;moviendonos al banco 1
+0001   1303           00031     bcf STATUS,6
+                      00032 
+0002   3000           00033     movlw b'00000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0003   0086           00034     movwf TRISB                 ;configurar los pines de PORTB como salida
+                      00035 
+0004   3000           00036     movlw b'00000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0005   0087           00037     movwf TRISC                 ;configurar los pines de PORTC como salida
+                      00038 
+0006   300F           00039     movlw b'00001111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0007   0088           00040     movwf TRISD                 ;configurar los pines de PORTD como salida
+                      00041 
+                      00042 
+                      00043 
+0008   1283           00044     bcf STATUS,5                ;moviendonos al banco 0
+0009   1303           00045     bcf STATUS,6
+                      00046 
+000A                  00047 START                           ;loop principal
+                      00048 
+000A                  00049 print
+                      00050 
+Warning[203]: Found opcode in column 1. (bsf)
+000A   1587           00051 bsf PORTC,3                     ;seleciona el primer 7 segmento
+Warning[203]: Found opcode in column 1. (movlw)
+000B   3021           00052 movlw temp                      ;coloca en w el contenido de temp
+Warning[203]: Found opcode in column 1. (movwf)
+000C   0086           00053 movwf PORTB                     ;coloca en el primer 7 segmento el contenido de w
+Warning[203]: Found opcode in column 1. (bcf)
+000D   1187           00054 bcf PORTC,3                     ;deselaciona el primer 7 segmento
+                      00055 
+Warning[203]: Found opcode in column 1. (bsf)
+000E   1607           00056 bsf PORTC,4                     ;seleciona el segundo 7 segmento
+Warning[203]: Found opcode in column 1. (movlw)
+000F   3022           00057 movlw temp2                     ;coloca en w el contenido de temp2
+Warning[203]: Found opcode in column 1. (movwf)
+0010   0086           00058 movwf PORTB                     ;coloca en el segundo 7 segmento el contenido de w
+Warning[203]: Found opcode in column 1. (bcf)
+0011   1207           00059 bcf PORTC,4                     ;deselaciona el primer 7 segmento
+                      00060 
+                      00061 
+Warning[203]: Found opcode in column 1. (goto)
+0012   2???           00062 goto FILA1
+                      00063 
+                      00064 
+0013                  00065 FILA1
+0013   3010           00066     movlw   b'00010000'         ;Mandando un uno a la primera fila
+0014   0088           00067     movwf   PORTD
+                      00068 
+0015   1808           00069     btfsc   PORTD,0             ;verifica si ha un uno en la primera columna
+0016   2???           00070     call    DEC1
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00071 
+0017   2???           00072     call    DELAY               ;retraza para que no lea varias veces
+                      00073 
+0018   1888           00074     btfsc   PORTD,1             ;verifica si ha un uno en la segunda columna
+0019   2???           00075     call    DEC2
+                      00076 
+001A   2???           00077     call    DELAY               ;retraza para que no lea varias veces
+                      00078 
+001B   1908           00079     btfsc   PORTD,2             ;verifica si ha un uno en la tercera columna
+001C   2???           00080     call    DEC3
+                      00081 
+001D   2???           00082     call    DELAY               ;retraza para que no lea varias veces
+                      00083 
+001E   2???           00084     goto    FILA2
+                      00085    
+001F                  00086 FILA2
+001F   3020           00087     movlw   b'00100000'         ;Mandando un uno a la segunda fila
+0020   0088           00088     movwf   PORTD
+                      00089 
+0021   1808           00090     btfsc   PORTD,0             ;verifica si ha un uno en la primera columna
+0022   2???           00091     call    DEC4
+                      00092 
+0023   2???           00093     call    DELAY               ;retraza para que no lea varias veces
+                      00094 
+0024   1888           00095     btfsc   PORTD,1             ;verifica si ha un uno en la segunda columna
+0025   2???           00096     call    DEC5
+                      00097 
+0026   2???           00098     call    DELAY               ;retraza para que no lea varias veces
+                      00099 
+0027   1908           00100     btfsc   PORTD,2             ;verifica si ha un uno en la tercera columna
+0028   2???           00101     call    DEC6
+                      00102 
+0029   2???           00103     call    DELAY               ;retraza para que no lea varias veces
+                      00104 
+002A   2???           00105     goto    FILA3
+                      00106 
+002B                  00107 FILA3
+002B   3040           00108     movlw   b'01000000'         ;Mandando un uno a la tercera fila
+002C   0088           00109     movwf   PORTD
+                      00110 
+002D   1808           00111     btfsc   PORTD,0             ;verifica si ha un uno en la primera columna
+002E   2???           00112     call    DEC7
+                      00113 
+002F   2???           00114     call    DELAY               ;retraza para que no lea varias veces
+                      00115 
+0030   1888           00116     btfsc   PORTD,1             ;verifica si ha un uno en la segunda columna
+0031   2???           00117     call    DEC8
+                      00118 
+0032   2???           00119     call    DELAY               ;retraza para que no lea varias veces
+                      00120 
+0033   1908           00121     btfsc   PORTD,2             ;verifica si ha un uno en la tercera columna
+0034   2???           00122     call    DEC9
+                      00123 
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0035   2???           00124     call    DELAY               ;retraza para que no lea varias veces
+                      00125 
+0036   2???           00126     goto    FILA4
+                      00127 
+0037                  00128 FILA4
+0037   3080           00129     movlw   b'10000000'         ;Mandando un uno a la tercera fila
+0038   0088           00130     movwf   PORTD
+                      00131 
+0039   1888           00132     btfsc   PORTD,1             ;verifica si ha un uno en la tercera columna
+003A   2???           00133     call    DEC0
+                      00134 
+003B   2???           00135     call    DELAY               ;retraza para que no lea varias veces
+                      00136 
+003C   2???           00137     goto    START               ;FINAL del LOOP principal
+                      00138 
+                      00139 
+003D                  00140 DELAY                           ;delay de tiempo
+                      00141 
+003D                  00142 LOOP1
+003D   0B88           00143     decfsz  COUNT1,1
+003E   2???           00144     goto    LOOP1
+003F                  00145 LOOP2
+003F   0B89           00146     decfsz  COUNT2,1
+0040   2???           00147     goto    LOOP1
+                      00148 
+0041   0008           00149     return
+                      00150 
+0042                  00151 DEC0
+Warning[203]: Found opcode in column 1. (call)
+0042   2???           00152 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0043   30AA           00153 movlw 0xAA
+Warning[203]: Found opcode in column 1. (movwf)
+0044   00A1           00154 movwf temp                      ;Poene un 0 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0045   0008           00155 return
+                      00156 
+0046                  00157 DEC1
+Warning[203]: Found opcode in column 1. (call)
+0046   2???           00158 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0047   30EF           00159 movlw 0xEF
+Warning[203]: Found opcode in column 1. (movwf)
+0048   00A1           00160 movwf temp                      ;Poene un 1 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0049   0008           00161 return
+                      00162 
+004A                  00163 DEC2
+Warning[203]: Found opcode in column 1. (call)
+004A   2???           00164 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+004B   3005           00165 movlw 0x05
+Warning[203]: Found opcode in column 1. (movwf)
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+004C   00A1           00166 movwf temp                      ;Poene un 2 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+004D   0008           00167 return
+                      00168 
+004E                  00169 DEC3
+Warning[203]: Found opcode in column 1. (call)
+004E   2???           00170 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+004F   3092           00171 movlw 0x92
+Warning[203]: Found opcode in column 1. (movwf)
+0050   00A1           00172 movwf temp                      ;Poene un 3 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0051   0008           00173 return
+                      00174 
+0052                  00175 DEC4
+Warning[203]: Found opcode in column 1. (call)
+0052   2???           00176 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0053   3064           00177 movlw 0x64
+Warning[203]: Found opcode in column 1. (movwf)
+0054   00A1           00178 movwf temp                      ;Poene un 4 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0055   0008           00179 return
+                      00180 
+0056                  00181 DEC5
+Warning[203]: Found opcode in column 1. (call)
+0056   2???           00182 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0057   30CA           00183 movlw 0xCA
+Warning[203]: Found opcode in column 1. (movwf)
+0058   00A1           00184 movwf temp                      ;Poene un 5 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0059   0008           00185 return
+                      00186 
+005A                  00187 DEC6
+Warning[203]: Found opcode in column 1. (call)
+005A   2???           00188 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+005B   309F           00189 movlw 0x9F
+Warning[203]: Found opcode in column 1. (movwf)
+005C   00A1           00190 movwf temp                      ;Poene un 6 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+005D   0008           00191 return
+                      00192 
+005E                  00193 DEC7
+Warning[203]: Found opcode in column 1. (call)
+005E   2???           00194 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+005F   3085           00195 movlw 0x85
+Warning[203]: Found opcode in column 1. (movwf)
+0060   00A1           00196 movwf temp                      ;Poene un 7 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0061   0008           00197 return
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00198 
+0062                  00199 DEC8
+Warning[203]: Found opcode in column 1. (call)
+0062   2???           00200 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0063   3052           00201 movlw 0x52
+Warning[203]: Found opcode in column 1. (movwf)
+0064   00A1           00202 movwf temp                      ;Poene un 7 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0065   0008           00203 return
+                      00204 
+0066                  00205 DEC9
+Warning[203]: Found opcode in column 1. (call)
+0066   2???           00206 call COPIA                      ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (movlw)
+0067   30D4           00207 movlw 0xD4
+Warning[203]: Found opcode in column 1. (movwf)
+0068   00A1           00208 movwf temp                      ;Poene un 8 en codigo de 7 segementos
+Warning[203]: Found opcode in column 1. (return)
+0069   0008           00209 return
+                      00210 
+006A                  00211 COPIA
+Warning[203]: Found opcode in column 1. (movlw)
+006A   3021           00212 movlw temp
+Warning[203]: Found opcode in column 1. (movwf)
+006B   00A2           00213 movwf temp2                     ;copia el contenido de temp en temp2
+Warning[203]: Found opcode in column 1. (return)
+006C   0008           00214 return
+                      00215 
+Warning[205]: Found directive in column 1. (END)
+2FF4                  00216 END
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+BRG9                              00000001
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRGH                              00000002
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+COPIA                             0000006A
+COUNT1                            00000008
+COUNT2                            00000009
+CREN                              00000004
+CSRC                              00000007
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DEC0                              00000042
+DEC1                              00000046
+DEC2                              0000004A
+DEC3                              0000004E
+DEC4                              00000052
+DEC5                              00000056
+DEC6                              0000005A
+DEC7                              0000005E
+DEC8                              00000062
+DEC9                              00000066
+DELAY                             0000003D
+D_A                               00000005
+D_NOT_A                           00000005
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FILA1                             00000013
+FILA2                             0000001F
+FILA3                             0000002B
+FILA4                             00000037
+FSR                               00000004
+FVREN                             00000000
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LOOP1                             0000003D
+LOOP2                             0000003F
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+START                             0000000A
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+VCFG0                             00000004
+VCFG1                             00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+MPASM 5.55  /HOME/FRANK/MPLABXPROJECTS/KEYBO   3-15-2014  16:02:49         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+print                             0000000A
+temp                              00000021
+temp2                             00000022
+
+Errors   :     0
+Warnings :    66 reported,     0 suppressed
+Messages :     3 reported,     0 suppressed
+
+
